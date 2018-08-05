@@ -1,0 +1,3536 @@
+id: 268e09c5-3b75-4e32-a187-f3cb770ca952
+name: Irta-Bot
+version: 0.0.5
+desc: Ibu Rumah Tangga Artifisial
+timezone: 7
+flows:
+    cook:
+        active: true
+        expire: '5000'
+        fallback: true
+        intents:
+            greetingIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: greetingKey
+            morningIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: morningKey
+            afternoonIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: afternoonKey
+            eveningIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: eveningKey
+            askNameIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: askNameKey
+            askCapIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: askCapKey
+            askGiziIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: giziKey
+            yesIntent:
+                type: text
+                initial: true
+                fallback: false
+                priority: '2'
+                classifier:
+                    nlu: yesno
+                    match: yesKey
+            noIntent:
+                type: text
+                initial: true
+                fallback: false
+                priority: '2'
+                classifier:
+                    nlu: yesno
+                    match: noKey
+            kategoriMenuChoosenIntent:
+                type: data
+                initial: true
+                fallback: false
+                condition: payload.type == "kategori"
+            subMenuKategoriChoosenIntent:
+                type: data
+                initial: true
+                fallback: false
+                condition: payload.type == "menuKategori"
+            menuChoosenIntent:
+                type: data
+                initial: true
+                fallback: false
+                condition: payload.type == "menu"
+            menuAwalIntent:
+                type: text
+                initial: true
+                fallback: false
+                priority: '2'
+                condition: content == "resep masakan"
+            askCookIntent:
+                type: text
+                initial: true
+                fallback: false
+                priority: '1'
+                classifier:
+                    nlu: intentNLU
+                    match: askCookKey
+            thanksIntent:
+                type: text
+                initial: true
+                fallback: false
+                priority: '3'
+                classifier:
+                    nlu: intentNLU
+                    match: thanksKey
+            askKabarIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: kabarKey
+            kabarAnsIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: kabarAnsKey
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content == "reenter"
+            bahanStartIntent:
+                type: text
+                initial: true
+                fallback: false
+                priority: '2'
+                classifier:
+                    nlu: masak
+                    match: bahan
+            askNameByUserIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: askNameUserKey
+            bumilIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: bumil
+                    match: sp
+            menuMinumanIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: menu
+                    match: minuman
+            getStarted:
+                type: data
+                initial: true
+                fallback: false
+                condition: payload.type == "follow"
+            polaMakananIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: polaMakananUmurKey
+            penyakitIntent:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: intentNLU
+                    match: penyakitKey
+            penyakitNameIntent:
+                type: text
+                initial: true
+                fallback: false
+                priority: '3'
+                classifier:
+                    nlu: penyakit
+                    match: namaPenyakit
+                attributes:
+                    penyakit:
+                        nlu: penyakit
+            fallbackIntent:
+                type: text
+                initial: false
+                fallback: true
+        states:
+            init:
+                action: chatLogAction
+                transit:
+                    context.name: 'result.data[0].name'
+                exit:
+                    context.bahan: attributes.bahan
+                transitions:
+                    askCookStartHandling:
+                        condition: intent == "bahanStartIntent"
+                        mapping:
+                            context.bahan: content
+                    bumilHandling:
+                        condition: intent == "bumilIntent"
+                    askCapHandling:
+                        condition: intent == "askCapIntent"
+                    askCookHandling:
+                        condition: intent == "askCookIntent"
+                    thanksHandling:
+                        condition: intent == "thanksIntent"
+                    greetingHandling:
+                        condition: intent == "morningIntent" || intent == "eveningIntent" || intent == "afternoonIntent" || intent == "greetingIntent"
+                    askKabarHandling:
+                        condition: intent == "askKabarIntent"
+                    askNameHandling:
+                        condition: intent == "askNameIntent"
+                    askNameByUserHandling:
+                        condition: intent == "askNameByUserIntent"
+                    kabarAnsHandling:
+                        condition: intent== "kabarAnsIntent"
+                    yesnoHandling:
+                        condition: intent == "yesIntent"|| intent == "noIntent"
+                    menuHandling:
+                        condition: intent == "menuAwalIntent"
+                    askCookingYesHandling:
+                        condition: payload.type == "bahan"
+                        mapping:
+                            context.menu: payload.type
+                    menuKategoriHandling:
+                        condition: intent == "kategoriMenuChoosenIntent"
+                        mapping:
+                            context.menu: payload.type
+                    subMenuKategoriHandling:
+                        condition: intent == "subMenuKategoriChoosenIntent"
+                    answerResepHandling:
+                        condition: intent == "menuChoosenIntent"
+                        mapping:
+                            context.bahan: payload.menu
+                    askGiziHandling:
+                        condition: intent == "askGiziIntent"
+                    askPolaMakananHandling:
+                        condition: intent == "polaMakananIntent"
+                    beginHandling:
+                        condition: intent == "getStarted"
+                    askPenyakitHandling:
+                        condition: intent == "penyakitIntent"
+                    fallbackHandling:
+                        fallback: true
+                initial: true
+                end: false
+                style:
+                    top: 208px
+                    left: 66px
+            greetingHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: greetingAction
+                        condition: intent == "greetingIntent"
+                    -
+                        name: eveningAction
+                        condition: intent == "eveningIntent"
+                    -
+                        name: morningAction
+                        condition: intent == "morningIntent"
+                    -
+                        isNewAction: false
+                        name: sticketGreetingAction
+                    -
+                        name: afternoonAction
+                        condition: intent == "afternoonIntent"
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: 19px
+                    left: 324px
+            askNameHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: askNameAction
+                        condition: intent == "askNameIntent"
+                    -
+                        isNewAction: false
+                        name: stickerNameAction
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: 124px
+                    left: 362px
+            askCapHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: askCapAction
+                        condition: intent == "askCapIntent"
+                    -
+                        isNewAction: false
+                        name: stickerCapAction
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: 75px
+                    left: 344px
+            askCookingYesHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: answerResepFallbackAction
+                        condition: intent == "fallbackIntent" && context.menu != "bahan"
+                    -
+                        name: yesAction
+                        condition: intent != "fallbackIntent" || context.menu == "bahan"
+                transitions:
+                    answerResepHandling:
+                        fallback: false
+                        condition: intent == "bahanStartIntent"
+                        mapping:
+                            context.bahan: content
+                    askCookingYesHandling:
+                        fallback: true
+                initial: false
+                end: false
+                style:
+                    top: 26px
+                    left: 663px
+            fallbackHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: fallbackAction
+                    -
+                        name: suggestAction
+                transitions: {}
+                initial: false
+                end: true
+                style:
+                    top: 171px
+                    left: 369px
+            answerResepHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: fallbackAction
+                        condition: intent == "fallbackIntent"
+                    -
+                        name: getApiCookAction
+                        condition: intent != "fallbackIntent"
+                    -
+                        name: showResepText2Action
+                        condition: intent != "fallbackIntent"
+                    -
+                        name: showResepCarAction
+                        condition: intent != "fallbackIntent"
+                    -
+                        name: showResepTextAction
+                        condition: intent != "fallbackIntent"
+                transit:
+                    resepImg: 'result.resep[0].judul'
+                transitions:
+                    aswerResepEndHandling:
+                        condition: intent == "noIntent" || intent == "thanksIntent"
+                    askCookStartHandling:
+                        condition: intent == "bahanStartIntent"
+                        mapping:
+                            context.bahan: content
+                    answerResepHandling:
+                        fallback: true
+                        condition: intent == "yesIntent"
+                end: false
+                style:
+                    top: 131px
+                    left: 696px
+            askCookHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: fallbackAction
+                        condition: intent == "fallbackIntent"
+                    -
+                        name: askCookAction
+                transitions:
+                    askCookingYesHandling:
+                        condition: intent == "yesIntent"
+                    askCookNoHandling:
+                        condition: intent == "noIntent"
+                    answerResepHandling:
+                        condition: intent == "bahanStartIntent"
+                        mapping:
+                            context.bahan: content
+                    askCookHandling:
+                        fallback: true
+                initial: true
+                style:
+                    top: 276px
+                    left: 356px
+            askCookNoHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: fallbackAction
+                        condition: intent == "fallbackIntent"
+                    -
+                        name: noAction
+                transitions: {}
+                end: true
+                style:
+                    top: 252px
+                    left: 711px
+            thanksHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: thanksReplyAction
+                    -
+                        isNewAction: false
+                        name: stickerThanksAction
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: 321px
+                    left: 395px
+            askKabarHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        isNewAction: false
+                        name: askKabarAction
+                    -
+                        isNewAction: false
+                        name: askKabarResAction
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: 423px
+                    left: 367px
+            kabarAnsHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: kabarAnsAction
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: 370px
+                    left: 367px
+            aswerResepEndHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        isNewAction: false
+                        name: resepEndAction
+                    -
+                        isNewAction: false
+                        name: stickerOkayAction
+                transitions: {}
+                end: true
+                style:
+                    top: 200px
+                    left: 716px
+            askCookStartHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: getNameAction
+                    -
+                        name: answerResepFallbackAction
+                        condition: intent == "fallbackIntent"
+                    -
+                        name: getApiCookAction
+                        condition: intent != "fallbackIntent"
+                    -
+                        name: showResepText2Action
+                        condition: intent != "fallbackIntent"
+                    -
+                        name: showResepCarAction
+                        condition: intent != "fallbackIntent"
+                    -
+                        isNewAction: false
+                        name: showResepTextAction
+                        condition: intent != "fallbackIntent"
+                transitions:
+                    aswerResepEndHandling:
+                        condition: intent == "noIntent" || intent == "thanksIntent"
+                    answerResepHandling:
+                        condition: intent == "bahanStartIntent"
+                        mapping:
+                            context.bahan: content
+                    askCookStartHandling:
+                        fallback: true
+                        condition: intent == "yesIntent"
+                initial: true
+                style:
+                    top: 456px
+                    left: 607px
+            askUserNameHandling:
+                action:
+                    name: confirmUserNameAction
+                    condition: context.name != NULL
+                transitions:
+                    guessGenderHandling:
+                        condition: intent == "yesIntent"
+                    beginHandling:
+                        fallback: true
+                        condition: intent == "noIntent"
+                initial: false
+                style:
+                    top: 350px
+                    left: '-26px'
+            saveNameHandling:
+                action: rememberNameAction
+                transitions: {}
+                end: true
+                style:
+                    top: 531px
+                    left: '-91px'
+            beginHandling:
+                action:
+                    -
+                        name: askUserNameAction
+                        isNewAction: false
+                        condition: intent != "noIntent" || intent != "yesIntent"
+                    -
+                        isNewAction: false
+                        name: askUserNameAgainAction
+                        condition: intent == "noIntent"
+                transitions:
+                    askUserNameHandling:
+                        mapping:
+                            context.name: content
+                initial: true
+                style:
+                    top: 276px
+                    left: 18px
+            askNameByUserHandling:
+                action:
+                    -
+                        name: getNameAction
+                    -
+                        isNewAction: false
+                        name: answerNameToUserAction
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: '-30px'
+                    left: 301px
+            yesnoHandling:
+                action:
+                    -
+                        isNewAction: false
+                        name: yesHandlingAction
+                        condition: intent == "yesIntent"
+                    -
+                        isNewAction: false
+                        name: noHandlingAction
+                        condition: intent == "noIntent"
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: 497px
+                    left: 353px
+            bumilHandling:
+                action:
+                    -
+                        isNewAction: false
+                        name: bumilApiAction
+                    -
+                        isNewAction: false
+                        name: bumilTextAction
+                    -
+                        name: showResepCarAction
+                    -
+                        name: showResepTextAction
+                transitions:
+                    aswerResepEndHandling:
+                        fallback: true
+                        condition: intent == "noIntent"
+                    bumilHandling:
+                        condition: intent == "yesIntent"
+                initial: true
+                style:
+                    top: 517px
+                    left: 563px
+            menuHandling:
+                action: showResepMenuAwal
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: '-60px'
+                    left: 147px
+            menuKategoriHandling:
+                action:
+                    -
+                        name: showResepMenuAction
+                    -
+                        name: showResepMenu2Action
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: '-103px'
+                    left: 175px
+            subMenuKategoriHandling:
+                action:
+                    -
+                        name: showResepBerkuahAction
+                        condition: payload.menu == "makanan berkuah"
+                    -
+                        name: showResepBerkuah2Action
+                        condition: payload.menu == "makanan berkuah"
+                    -
+                        name: showResepMinumanAction
+                        condition: payload.menu == "minuman"
+                    -
+                        name: showResepMinuman2Action
+                        condition: payload.menu == "minuman"
+                    -
+                        name: showResepCamilanAction
+                        condition: payload.menu == "camilan"
+                    -
+                        name: showResepCamilan2Action
+                        condition: payload.menu == "camilan"
+                    -
+                        name: showResepKueAction
+                        condition: payload.menu == "kue"
+                    -
+                        name: showResepKue2Action
+                        condition: payload.menu == "kue"
+                    -
+                        name: showResepKueKeringAction
+                        condition: payload.menu == "kue kering"
+                    -
+                        name: showResepKueKering2Action
+                        condition: payload.menu == "kue kering"
+                    -
+                        name: showResepIndonesiaAction
+                        condition: payload.menu == "masakan indonesia"
+                    -
+                        name: showResepIndonesia2Action
+                        condition: payload.menu == "masakan indonesia"
+                    -
+                        name: showResepInternasionalAction
+                        condition: payload.menu == "masakan internasional"
+                    -
+                        name: showResepInternasional2Action
+                        condition: payload.menu == "masakan internasional"
+                transitions: {}
+                initial: true
+                end: true
+                style:
+                    top: '-147px'
+                    left: 216px
+            askGiziHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: askGiziPilihanAction
+                transitions:
+                    askKaloriMakananHandling:
+                        condition: payload.type == "lihat"
+                    askHitungKaloriHandling:
+                        condition: payload.type == "hitung"
+                initial: true
+                end: false
+                style:
+                    top: 156px
+                    left: '-121px'
+            askBahanGiziHandling:
+                action:
+                    -
+                        name: chatLogAction
+                    -
+                        name: showGiziApiAction
+                    -
+                        name: showGiziTextAction
+                    -
+                        name: showGiziText2Action
+                transitions: {}
+                end: true
+                style:
+                    top: 328px
+                    left: '-232px'
+            guessGenderHandling:
+                action:
+                    -
+                        name: saveNameAction
+                    -
+                        name: guessGenderApi
+                    -
+                        name: guessGenderTextAction
+                    -
+                        name: askAgeAction
+                    -
+                        name: askAgeRepeatAction
+                        condition: intent == "noIntent"
+                    -
+                        name: saveGenderAction
+                transitions:
+                    askAgeHandling:
+                        fallback: true
+                    guessGenderHandling:
+                        fallback: true
+                end: false
+                style:
+                    top: 412px
+                    left: '-111px'
+            askAgeHandling:
+                action:
+                    -
+                        name: filterAgeApi
+                    -
+                        name: confirmAgeAction
+                    -
+                        name: saveAgeApi
+                transitions:
+                    saveNameHandling:
+                        condition: intent == "yesIntent"
+                    guessGenderHandling:
+                        condition: intent == "noIntent"
+                style:
+                    top: 473px
+                    left: '-102px'
+            askPolaMakananHandling:
+                action: polaMakananAction
+                transitions:
+                    showIdealAction:
+                        condition: payload.type == "ideal"
+                    showHindariAction:
+                        condition: payload.type == "hindari"
+                initial: true
+                style:
+                    top: 54px
+                    left: '-153px'
+            showIdealAction:
+                action:
+                    -
+                        name: getAgeApi
+                    -
+                        name: showIdeaTextAction
+                    -
+                        name: getPolaApi
+                    -
+                        name: showMakananIdealTextAction
+                    -
+                        name: showMakananIdeal2TextAction
+                    -
+                        name: showMakananIdeal3TextAction
+                    -
+                        name: showMakananIdeal4TextAction
+                transitions: {}
+                initial: false
+                end: true
+                style:
+                    top: '-21px'
+                    left: '-168px'
+            showHindariAction:
+                action:
+                    -
+                        name: getAgeApi
+                    -
+                        name: showHindariTextAction
+                    -
+                        name: getPolaApi
+                    -
+                        name: showMakananHindariTextAction
+                    -
+                        name: showMakananHindari2TextAction
+                    -
+                        name: showMakananHindari3TextAction
+                    -
+                        name: showMakananHindari4TextAction
+                transitions: {}
+                initial: false
+                end: true
+                style:
+                    top: '-70px'
+                    left: '-64px'
+            askPenyakitHandling:
+                action: askDiseaseNameTextAction
+                transitions:
+                    askPenyakitNameHandling:
+                        condition: intent == "penyakitNameIntent"
+                        mapping:
+                            context.penyakit: attributes.penyakit
+                    askPenyakitHandling:
+                        fallback: true
+                initial: true
+                style:
+                    top: 115px
+                    left: '-373px'
+            askPenyakitNameHandling:
+                action:
+                    -
+                        name: getDiseaseNameApi
+                    -
+                        name: makananPantanganTextAction
+                transitions: {}
+                end: true
+                style:
+                    top: 197px
+                    left: '-411px'
+            askKaloriMakananHandling:
+                action: askGiziAction
+                transitions:
+                    askBahanGiziHandling:
+                        mapping:
+                            context.bahan: content
+                style:
+                    top: 242px
+                    left: '-171px'
+            askHitungKaloriHandling:
+                action: askHitungKaloriAction
+                transitions:
+                    answerHitungKaloriHandling: {}
+                style:
+                    top: 264px
+                    left: '-438px'
+            answerHitungKaloriHandling:
+                action:
+                    -
+                        name: hitungKaloriApi
+                    -
+                        name: answerHitungKaloriAction
+                    -
+                        name: answerHitungKalori2Action
+                transitions: {}
+                end: true
+                style:
+                    top: 329px
+                    left: '-509px'
+        actions:
+            greetingAction:
+                type: text
+                options:
+                    text:
+                        - 'Halo $(result.data[0].name)...'
+                        - 'Holla $(result.data[0].name)...'
+                        - 'Hei $(result.data[0].name)...'
+                        - 'Hello $(result.data[0].name)...'
+            fallbackAction:
+                type: text
+                options:
+                    text:
+                        - Maksudnya?
+                        - Aku gak ngerti...
+                        - Maksud kamu..?
+            morningAction:
+                type: text
+                options:
+                    text:
+                        - 'Pagi juga $(result.data[0].name)...'
+                        - 'Pagi $(result.data[0].name)...'
+            afternoonAction:
+                type: text
+                options:
+                    text:
+                        - 'Siang $(result.data[0].name)...'
+                        - 'Siang juga $(result.data[0].name)...'
+            eveningAction:
+                type: text
+                options:
+                    text:
+                        - 'Malam $(result.data[0].name)...'
+                        - 'Malam juga $(result.data[0].name)...'
+            askNameAction:
+                type: text
+                options:
+                    text:
+                        - 'Namaku Irta, ibu rumah tangga artifisial.'
+                        - 'Namaku Irta, ibu rumah tangga artifisial. Salam kenal ya...'
+                        - Yah... masa' lupa... Namaku Irta.
+            askCapAction:
+                type: text
+                options:
+                    text: 'Kamu bisa tanya seputar resep masakan, tips ibu rumah tangga dan masih banyak lagi.'
+            askCookAction:
+                type: text
+                options:
+                    text:
+                        - 'Kamu bingung mau masak ya, $(result.data[0].name)?'
+                        - '$(result.data[0].name) mau masak apa?'
+            noAction:
+                type: text
+                options:
+                    text:
+                        - Jadi kamu ingin tanya apa?
+                        - Terus?
+            yesAction:
+                type: text
+                options:
+                    text:
+                        - Kamu punya bahan apa?
+                        - Di kulkas ada apa?
+                        - Kamu ingin masak dari bahan apa?
+            showResepListsAction:
+                type: text
+                options:
+                    text: Gimana kalau masak $(result.resep.resep.judul)?
+            showResepAction:
+                type: text
+                options:
+                    text: $(result.resep.resep.link)
+            answerResepFallbackAction:
+                type: text
+                options:
+                    text:
+                        - Apaan tuh... Aku gak tau... Ada yang lain?
+                        - Bahan apa tuh? Ada yang lain?
+            showResepImgAction:
+                type: template
+                options:
+                    type: image
+                    items:
+                        originalContentUrl: $(result.resep.resep.img)
+                        previewImageUrl: $(result.resep.resep.img)
+            suggestAction:
+                type: text
+                options:
+                    text: 'Kamu bisa tanya-tanya seputar resep masakan, kalori makanan, dan masih banyak lagi...'
+            thanksReplyAction:
+                type: text
+                options:
+                    text:
+                        - Ya sama sama ...
+                        - Sama sama...
+            sticketGreetingAction:
+                type: template
+                options:
+                    type: sticker
+                    items:
+                        stickerId: '242'
+                        packageId: '3'
+            stickerNameAction:
+                type: template
+                options:
+                    type: sticker
+                    items:
+                        stickerId: '210'
+                        packageId: '3'
+            stickerCapAction:
+                type: template
+                options:
+                    type: sticker
+                    items:
+                        stickerId: '191'
+                        packageId: '3'
+            stickerThanksAction:
+                type: template
+                options:
+                    type: sticker
+                    items:
+                        stickerId: '195'
+                        packageId: '3'
+            askKabarAction:
+                type: text
+                options:
+                    text:
+                        - 'Baik, kok...'
+                        - Kabarku baik...
+                        - Aku baik-baik aja...
+            askKabarResAction:
+                type: text
+                options:
+                    text:
+                        - Kabarmu gimana?
+                        - 'Kalau kamu, $(result.data[0].name)?'
+                        - Kamu?
+            kabarAnsAction:
+                type: text
+                options:
+                    text: Syukurlah..
+            stickerOkayAction:
+                type: template
+                options:
+                    type: sticker
+                    items:
+                        stickerId: '184'
+                        packageId: '3'
+            resepEndAction:
+                type: text
+                options:
+                    text:
+                        - Sip... Selamat masak ya...
+                        - Selamat masak...
+                        - Okaay... met masak ya...
+            showResepCarAction:
+                type: template
+                options:
+                    type: carousel
+                    items:
+                        -
+                            title: '$(result.data[0].title)'
+                            text: '$(result.data[0].description)'
+                            thumbnailImageUrl: '$(result.data[0].image)'
+                            actions:
+                                -
+                                    type: url
+                                    label: Cek Resep
+                                    url: '$(result.data[0].url)'
+                        -
+                            title: '$(result.data[1].title)'
+                            text: '$(result.data[1].description)'
+                            thumbnailImageUrl: '$(result.data[1].image)'
+                            actions:
+                                -
+                                    type: url
+                                    label: Cek Resep
+                                    url: '$(result.data[1].url)'
+                        -
+                            title: '$(result.data[2].title)'
+                            text: '$(result.data[2].description)'
+                            thumbnailImageUrl: '$(result.data[2].image)'
+                            actions:
+                                -
+                                    type: url
+                                    label: Cek Resep
+                                    url: '$(result.data[2].url)'
+                        -
+                            title: '$(result.data[3].title)'
+                            text: '$(result.data[3].description)'
+                            thumbnailImageUrl: '$(result.data[3].image)'
+                            actions:
+                                -
+                                    type: url
+                                    label: Cek Resep
+                                    url: '$(result.data[3].url)'
+                        -
+                            title: '$(result.data[4].title)'
+                            text: '$(result.data[4].description)'
+                            thumbnailImageUrl: '$(result.data[4].image)'
+                            actions:
+                                -
+                                    type: url
+                                    label: Cek Resep
+                                    url: '$(result.data[4].url)'
+            showResepTextAction:
+                type: text
+                options:
+                    text:
+                        - Mau lihat yang lain?
+                        - Resep lain?
+            getApiCookAction:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?bahan=$(context.bahan)'
+                    method: GET
+            showResepText2Action:
+                type: text
+                options:
+                    text: Nih pilihan masakannya...
+            chatLogAction:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?chat=$(content)'
+                    method: GET
+            saveNameAction:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?id=$(metadata.lineSenderId)&name=$(context.name)'
+                    method: GET
+            getNameAction:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?getid=$(metadata.lineSenderId)'
+                    method: GET
+            askUserNameAction:
+                type: text
+                options:
+                    text: 'Kata pepatah tak kenal maka tak sayang, aku ingin tahu namamu dong... Namamu siapa?'
+            confirmUserNameAction:
+                type: text
+                options:
+                    text: Hoo.. jadi namamu $(context.name)?
+            rememberNameAction:
+                type: text
+                options:
+                    text: 'Makasih ya $(context.name), udh kasih tau nama dan usiamu... Aku gak bakal lupa kok...'
+            askUserNameAgainAction:
+                type: text
+                options:
+                    text:
+                        - Jadi namamu siapa?
+                        - Terus namamu siapa?
+            answerNameToUserAction:
+                type: text
+                options:
+                    text:
+                        - 'Masa'' aku lupa namamu, kamu kan $(result.data[0].name)...'
+                        - 'Namamu kan $(result.data[0].name)...'
+            yesHandlingAction:
+                type: text
+                options:
+                    text:
+                        - Oke deh...
+                        - Sipp...
+            noHandlingAction:
+                type: text
+                options:
+                    text:
+                        - Ohh... bukan ya...
+                        - Aku salah berarti ya...
+            bumilTextAction:
+                type: text
+                options:
+                    text: 'Nih, masakan yang simpel dan praktis, cocok untuk ibu hamil...'
+            bumilApiAction:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?bumil=1'
+                    method: GET
+            showResepMenuAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: 'Kamu pilih deh, mau buat apa?'
+                        actions:
+                            -
+                                type: postback
+                                label: Makanan Berkuah
+                                payload:
+                                    type: menuKategori
+                                    menu: makanan berkuah
+                            -
+                                type: postback
+                                label: Minuman
+                                payload:
+                                    type: menuKategori
+                                    menu: minuman
+                            -
+                                type: postback
+                                label: Camilan
+                                payload:
+                                    type: menuKategori
+                                    menu: camilan
+                            -
+                                type: postback
+                                label: Kue
+                                payload:
+                                    type: menuKategori
+                                    menu: kue
+            showResepMenu2Action:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: nih tambahan lagi...
+                        actions:
+                            -
+                                type: postback
+                                label: Kue Kering
+                                payload:
+                                    type: menuKategori
+                                    menu: kue kering
+                            -
+                                type: postback
+                                label: Masakan Indonesia
+                                payload:
+                                    type: menuKategori
+                                    menu: masakan indonesia
+                            -
+                                type: postback
+                                label: Masakan Internasional
+                                payload:
+                                    type: menuKategori
+                                    menu: masakan internasional
+            showResepBerkuahAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Kamu mau masakan berkuah yang seperti apa...
+                        actions:
+                            -
+                                type: postback
+                                label: Sop
+                                payload:
+                                    type: menu
+                                    menu: sop
+                            -
+                                type: postback
+                                label: Soto
+                                payload:
+                                    type: menu
+                                    menu: soto
+                            -
+                                type: postback
+                                label: Bakso
+                                payload:
+                                    type: menu
+                                    menu: bakso
+                            -
+                                type: postback
+                                label: Gulai
+                                payload:
+                                    type: menu
+                                    menu: gulai
+            showResepBerkuah2Action:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Ada lagi nih...
+                        actions:
+                            -
+                                type: postback
+                                label: Semur
+                                payload:
+                                    type: menu
+                                    menu: semur
+                            -
+                                type: postback
+                                label: Tongseng
+                                payload:
+                                    type: menu
+                                    menu: tongseng
+                            -
+                                type: postback
+                                label: Rawon
+                                payload:
+                                    type: menu
+                                    menu: rawon
+                            -
+                                type: postback
+                                label: Lodeh
+                                payload:
+                                    type: menu
+                                    menu: lodeh
+            showResepMinumanAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Kamu mau minuman yang seperti apa...
+                        actions:
+                            -
+                                type: postback
+                                label: Minuman Es
+                                payload:
+                                    type: menu
+                                    menu: minuman es
+                            -
+                                type: postback
+                                label: Jus
+                                payload:
+                                    type: menu
+                                    menu: jus
+                            -
+                                type: postback
+                                label: Smoothies
+                                payload:
+                                    type: menu
+                                    menu: smoothies
+                            -
+                                type: postback
+                                label: Minuman Cokelat
+                                payload:
+                                    type: menu
+                                    menu: minuman cokelat
+            showResepMinuman2Action:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Ada lagi nih...
+                        actions:
+                            -
+                                type: postback
+                                label: Minuman Teh
+                                payload:
+                                    type: menu
+                                    menu: minuman teh
+                            -
+                                type: postback
+                                label: Minuman Kopi
+                                payload:
+                                    type: menu
+                                    menu: minuman kopi
+                            -
+                                type: postback
+                                label: Minuman Tradisional
+                                payload:
+                                    type: menu
+                                    menu: minuman tradisional
+            showResepCamilanAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Kamu mau camilan apa...
+                        actions:
+                            -
+                                type: postback
+                                label: Gorengan
+                                payload:
+                                    type: menu
+                                    menu: gorengan
+                            -
+                                type: postback
+                                label: Roti
+                                payload:
+                                    type: menu
+                                    menu: roti
+                            -
+                                type: postback
+                                label: Donat
+                                payload:
+                                    type: menu
+                                    menu: donat
+                            -
+                                type: postback
+                                label: Martabak
+                                payload:
+                                    type: menu
+                                    menu: martabak
+            showResepCamilan2Action:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Ada lagi nih...
+                        actions:
+                            -
+                                type: postback
+                                label: Bakwan
+                                payload:
+                                    type: menu
+                                    menu: bakwan
+                            -
+                                type: postback
+                                label: Pancake
+                                payload:
+                                    type: menu
+                                    menu: pancake
+                            -
+                                type: postback
+                                label: Siomay
+                                payload:
+                                    type: menu
+                                    menu: siomay
+                            -
+                                type: postback
+                                label: Pie
+                                payload:
+                                    type: menu
+                                    menu: pie
+            showResepKueAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Kamu mau kue apa...
+                        actions:
+                            -
+                                type: postback
+                                label: Kue Bolu
+                                payload:
+                                    type: menu
+                                    menu: kue bolu
+                            -
+                                type: postback
+                                label: Brownies
+                                payload:
+                                    type: menu
+                                    menu: brownies
+                            -
+                                type: postback
+                                label: Cheesecake
+                                payload:
+                                    type: menu
+                                    menu: cheesecake
+                            -
+                                type: postback
+                                label: Kue Tart
+                                payload:
+                                    type: menu
+                                    menu: kue tart
+            showResepKue2Action:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Ada lagi nih...
+                        actions:
+                            -
+                                type: postback
+                                label: Kue Cokelat
+                                payload:
+                                    type: menu
+                                    menu: kue cokelat
+                            -
+                                type: postback
+                                label: Kue Lapis
+                                payload:
+                                    type: menu
+                                    menu: kue lapis
+                            -
+                                type: postback
+                                label: Dadar Gulung
+                                payload:
+                                    type: menu
+                                    menu: dadar gulung
+                            -
+                                type: postback
+                                label: Kue Lumpur
+                                payload:
+                                    type: menu
+                                    menu: kue lumpur
+            showResepKueKeringAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Kamu mau kue kering apa...
+                        actions:
+                            -
+                                type: postback
+                                label: Nastar
+                                payload:
+                                    type: menu
+                                    menu: nastar
+                            -
+                                type: postback
+                                label: Kastengel
+                                payload:
+                                    type: menu
+                                    menu: kastengel
+                            -
+                                type: postback
+                                label: Kue Kacang
+                                payload:
+                                    type: menu
+                                    menu: kue kacang
+                            -
+                                type: postback
+                                label: Putri Salju
+                                payload:
+                                    type: menu
+                                    menu: putri salju
+            showResepKueKering2Action:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Ada lagi nih...
+                        actions:
+                            -
+                                type: postback
+                                label: Cookies
+                                payload:
+                                    type: menu
+                                    menu: cookies
+                            -
+                                type: postback
+                                label: Lidah Kucing
+                                payload:
+                                    type: menu
+                                    menu: lidah kucing
+                            -
+                                type: postback
+                                label: Sagu Keju
+                                payload:
+                                    type: menu
+                                    menu: sagu keju
+                            -
+                                type: postback
+                                label: Kue Semprit
+                                payload:
+                                    type: menu
+                                    menu: kue semprit
+            showResepIndonesiaAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Kamu mau masakan indonesia dari daerah mana...
+                        actions:
+                            -
+                                type: postback
+                                label: Masakan Jawa
+                                payload:
+                                    type: menu
+                                    menu: masakan jawa
+                            -
+                                type: postback
+                                label: Masakan Sunda
+                                payload:
+                                    type: menu
+                                    menu: masakan sunda
+                            -
+                                type: postback
+                                label: Masakan Padang
+                                payload:
+                                    type: menu
+                                    menu: masakan padang
+                            -
+                                type: postback
+                                label: Masakan Aceh
+                                payload:
+                                    type: menu
+                                    menu: masakan aceh
+            showResepIndonesia2Action:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Ada lagi nih...
+                        actions:
+                            -
+                                type: postback
+                                label: Masakan Medan
+                                payload:
+                                    type: menu
+                                    menu: masakan medan
+                            -
+                                type: postback
+                                label: Masakan Palembang
+                                payload:
+                                    type: menu
+                                    menu: masakan palembang
+                            -
+                                type: postback
+                                label: Masakan Bali
+                                payload:
+                                    type: menu
+                                    menu: masakan bali
+                            -
+                                type: postback
+                                label: Masakan Banjar
+                                payload:
+                                    type: menu
+                                    menu: masakan banjar
+            showResepInternasionalAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Kamu mau masakan dari daerah negara mana...
+                        actions:
+                            -
+                                type: postback
+                                label: Masakan Barat
+                                payload:
+                                    type: menu
+                                    menu: masakan barat
+                            -
+                                type: postback
+                                label: Masakan Korea
+                                payload:
+                                    type: menu
+                                    menu: masakan korea
+                            -
+                                type: postback
+                                label: Masakan Tiongkok
+                                payload:
+                                    type: menu
+                                    menu: masakan tiongkok
+                            -
+                                type: postback
+                                label: Masakan Jepang
+                                payload:
+                                    type: menu
+                                    menu: masakan jepang
+            showResepInternasional2Action:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Ada lagi nih...
+                        actions:
+                            -
+                                type: postback
+                                label: Masakan Thailand
+                                payload:
+                                    type: menu
+                                    menu: masakan thailand
+                            -
+                                type: postback
+                                label: Masakan India
+                                payload:
+                                    type: menu
+                                    menu: masakan india
+                            -
+                                type: postback
+                                label: Masakan Timur Tengah
+                                payload:
+                                    type: menu
+                                    menu: masakan timur tengah
+            showResepMenuAwal:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: Mau cari resep berdasarkan bahan atau kategori?
+                        actions:
+                            -
+                                type: postback
+                                label: Bahan
+                                payload:
+                                    type: bahan
+                            -
+                                type: postback
+                                label: Kategori
+                                payload:
+                                    type: kategori
+            showGiziApiAction:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/fat.php?srch=$(context.bahan)'
+                    method: GET
+            showGiziTextAction:
+                type: text
+                options:
+                    text: 'Ini dia, kalori yang dikandung oleh $(result.data.nama)...'
+            showGiziText2Action:
+                type: text
+                options:
+                    text: $(result.data.gizi)
+            askGiziAction:
+                type: text
+                options:
+                    text: Nama bahan makanannya?
+            scheduleBreakfastAction:
+                type: schedule
+                options:
+                    id: sCA
+                    command: add
+                    freqType: second
+                    freqInterval: '10'
+                    start: '2018-07-17T06:29:00.000Z'
+                    end: '2019-07-17T06:23:00.000Z'
+                    message:
+                        type: command
+                        content: breakfast
+            guessGenderApi:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/gender.php?name=$(context.name)'
+                    method: GET
+            guessGenderTextAction:
+                type: text
+                options:
+                    text: 'Aku tebak, kamu pasti $(result.data.gender)...'
+            askAgeAction:
+                type: text
+                options:
+                    text: 'Kalau usia kamu berapa, $(context.name)?'
+            confirmAgeAction:
+                type: text
+                options:
+                    text: Hoo... jadi usiamu $(result.data) tahun?
+            saveAgeApi:
+                type: api
+                options:
+                    method: GET
+                    uri: 'http://209.97.163.246/irta/api/cook/?id=$(metadata.lineSenderId)&age=$(result.data)'
+            askAgeRepeatAction:
+                type: text
+                options:
+                    text: Jadi berapa usiamu?
+            saveGenderAction:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?id=$(metadata.lineSenderId)&sex=$(result.data.gender)'
+                    method: GET
+            filterAgeApi:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?agefilter=$(content)'
+                    method: GET
+            polaMakananAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: ''
+                        actions:
+                            -
+                                type: postback
+                                label: Makanan Ideal
+                                payload:
+                                    type: ideal
+                            -
+                                type: postback
+                                label: Makanan Tidak Ideal
+                                payload:
+                                    type: hindari
+            getPolaApi:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?id=$(metadata.lineSenderId)&tipe=$(payload.type)'
+                    method: GET
+            showPolaCarolAction:
+                type: template
+                options:
+                    type: carousel
+                    data: $(result.data)
+                    template:
+                        text: '$[benefits]'
+                        title: '$[food]'
+                        thumbnailImageUrl: ''
+                        actions:
+                            -
+                                type: postback
+                                label: ''
+            getAgeApi:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?ageid=$(metadata.lineSenderId)'
+                    method: GET
+            showIdeaTextAction:
+                type: text
+                options:
+                    text: 'Di usia $(result.age) tahun, sebaiknya kamu mengonsumsi makanan berikut,'
+            showMakananIdealTextAction:
+                type: text
+                options:
+                    text: '$(result.data[0].food) => $(result.data[0].benefits)'
+            showMakananIdeal2TextAction:
+                type: text
+                options:
+                    text: '$(result.data[1].food) => $(result.data[1].benefits)'
+            showMakananIdeal3TextAction:
+                type: text
+                options:
+                    text: '$(result.data[2].food) => $(result.data[2].benefits)'
+            showMakananIdeal4TextAction:
+                type: text
+                options:
+                    text: '$(result.data[3].food) => $(result.data[3].benefits)'
+            showHindariTextAction:
+                type: text
+                options:
+                    text: 'Di usia $(result.age) tahun, sebaiknya kamu menghindari,'
+            showMakananHindariTextAction:
+                type: text
+                options:
+                    text: '=> $(result.data[0].benefits)'
+            showMakananHindari2TextAction:
+                type: text
+                options:
+                    text: '=> $(result.data[1].benefits)'
+            showMakananHindari3TextAction:
+                type: text
+                options:
+                    text: '=> $(result.data[2].benefits)'
+            showMakananHindari4TextAction:
+                type: text
+                options:
+                    text: '=> $(result.data[3].benefits)'
+            askDiseaseNameTextAction:
+                type: text
+                options:
+                    text: Nama penyakitnya?
+            askPenyakitNameTextAction:
+                type: text
+                options:
+                    text: Nama penyakitnya?
+            getDiseaseNameApi:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?disease=$(content)'
+                    method: GET
+            makananPantanganTextAction:
+                type: text
+                options:
+                    text: 'Untuk penyakit $(result.data[0].disease) sebaiknya menghindari makanan yang mengandung $(result.data[0].food)'
+            askGiziPilihanAction:
+                type: template
+                options:
+                    type: button
+                    items:
+                        title: ''
+                        text: ''
+                        actions:
+                            -
+                                type: postback
+                                label: Hitung Kalori Harian
+                                payload:
+                                    type: hitung
+                            -
+                                type: postback
+                                label: Lihat Kalori Makanan
+                                payload:
+                                    type: lihat
+            hitungKaloriApi:
+                type: api
+                options:
+                    uri: 'http://209.97.163.246/irta/api/cook/?id=$(metadata.lineSenderId)&hitungkalori=$(content)'
+                    method: GET
+            askHitungKaloriAction:
+                type: text
+                options:
+                    text: 'Hari ini kamu sudah makan apa saja? (Contoh: nasi, ayam, tempe, tahu, susu, mangga)'
+            answerHitungKaloriAction:
+                type: text
+                options:
+                    text: Jumlah kalori yang kamu konsumsi adalah $(result.total) Kkal.
+            answerHitungKalori2Action:
+                type: text
+                options:
+                    text: $(result.hasil)
+        methods: {}
+nlus:
+    intentNLU:
+        type: keyword
+        options:
+            keywords:
+                greetingKey:
+                    - halo
+                    - hi
+                    - hello
+                    - hai
+                    - helo
+                    - hola
+                    - ohayou
+                    - hay
+                    - hey
+                    - hei
+                    - hoi
+                morningKey:
+                    - pagi
+                    - selamat pagi
+                    - morning
+                    - good morning
+                    - pgi
+                afternoonKey:
+                    - siang
+                    - selamat siang
+                    - afternoon
+                    - good afternoon
+                    - sore
+                    - selamat sore
+                eveningKey:
+                    - malam
+                    - selamat malam
+                    - good evening
+                    - evening
+                    - malem
+                    - mlm
+                askNameKey:
+                    - namamu siapa
+                    - siapa namamu
+                    - namamu
+                    - kamu siapa
+                    - siapa kamu
+                    - kamu apa
+                    - kenalan
+                askCapKey:
+                    - kamu bisa apa
+                    - bisa apa
+                    - ngapain
+                    - bantu apa
+                askCookKey:
+                    - masak
+                    - bingung masak
+                    - masak bingung
+                    - bingung mau masak apa
+                    - laper
+                    - lapar
+                    - makan
+                    - resep
+                    - masakan
+                    - pengen makan
+                    - masak  apa
+                    - pengen masak
+                    - cara masak
+                thanksKey:
+                    - thanks
+                    - makasih
+                    - terima kasih
+                    - terimakasih
+                    - thank you
+                    - arigatou
+                    - thanks ya
+                    - makasih ya
+                    - terimakasih ya
+                    - terima kasih ya
+                    - thank you ya
+                kabarKey:
+                    - apa kabar
+                    - kabar
+                    - keadaan
+                    - kbr
+                    - kabarmu
+                    - kbrmu
+                    - keadaanmu
+                kabarAnsKey:
+                    - baik
+                    - alhamdulillah
+                    - alhamdulilah
+                askNameUserKey:
+                    - namaku
+                    - nama saya
+                    - saya siapa
+                    - aku siapa
+                    - nama aku
+                    - siapa aku
+                    - siapa saya
+                giziKey:
+                    - gizi
+                    - kalori
+                polaMakananUmurKey:
+                    - pola
+                    - pola makan
+                penyakitKey:
+                    - penyakit
+                    - sakit
+                    - pantangan
+                    - pantang
+    yesno:
+        type: keyword
+        options:
+            keywords:
+                yesKey:
+                    - ya
+                    - iya
+                    - oke
+                    - baiklah
+                    - okey
+                    - okay
+                    - hooh
+                    - iyes
+                    - 'yes'
+                    - 'y'
+                    - ay
+                    - bener
+                    - betul
+                    - yap
+                    - sip
+                    - bener banget
+                    - bener bgt
+                    - yoi
+                    - ok
+                    - boleh
+                    - lain
+                    - wah
+                    - iyoi
+                noKey:
+                    - nope
+                    - enggak
+                    - enggk
+                    - gk
+                    - gak
+                    - tidak
+                    - 'no'
+                    - bukan
+                    - g
+                    - gk jadi
+                    - gak jadi
+                    - udh
+                    - dah
+                    - dh
+                    - cukup
+                    - bkn
+                    - bkan
+    masak:
+        type: keyword
+        options:
+            keywords:
+                bahan:
+                    - telur
+                    - kambing
+                    - sapi
+                    - puyuh
+                    - ayam
+                    - almond
+                    - anggur
+                    - apel
+                    - aprikot
+                    - apokat
+                    - ara
+                    - asam
+                    - atap
+                    - arbei
+                    - avokad
+                    - bacang
+                    - belimbing
+                    - sayur
+                    - bengkuang
+                    - benda
+                    - beri
+                    - emu
+                    - bit
+                    - binjai
+                    - bisbul
+                    - blackberry
+                    - blackcurrant
+                    - blewah
+                    - blueberry
+                    - burahol
+                    - cempaka
+                    - cempedak
+                    - ceplukan
+                    - cermai
+                    - ceri
+                    - cokelat
+                    - cranberry
+                    - delima
+                    - duku
+                    - durian
+                    - duren
+                    - duwet
+                    - enau
+                    - erbis
+                    - frambos
+                    - feijoa
+                    - flamboyan
+                    - gandaria
+                    - gandum
+                    - gooseberry
+                    - gowok
+                    - hazelnut
+                    - jagung
+                    - jamblang
+                    - jambu
+                    - air
+                    - batu
+                    - biji
+                    - bol
+                    - mawar
+                    - mede
+                    - semarang
+                    - jengkol
+                    - jeruk
+                    - bali
+                    - jepara
+                    - keprok
+                    - kingkit
+                    - nipis
+                    - purut
+                    - kacang
+                    - tanah
+                    - kapulasan
+                    - kastanye
+                    - kawista
+                    - kecapi
+                    - kedondong
+                    - kelapa
+                    - kelengkeng
+                    - kenari
+                    - ketela
+                    - kemang
+                    - kepel
+                    - kersen
+                    - kesemek
+                    - kiwi
+                    - kismis
+                    - kokosan
+                    - kolang-kaling
+                    - kopi
+                    - kurma
+                    - kates
+                    - kenitu
+                    - kweni
+                    - lai
+                    - langsat
+                    - lemon
+                    - lengkeng
+                    - leci
+                    - limau
+                    - lobak
+                    - labu
+                    - mahkota
+                    - dewa
+                    - maja
+                    - malaka
+                    - mangga
+                    - lalijiwa
+                    - pari
+                    - manggis
+                    - markisa
+                    - matoa
+                    - melon
+                    - mengkudu
+                    - menteng
+                    - mentimun
+                    - suri
+                    - namnam
+                    - nanas
+                    - nangka
+                    - naga
+                    - nektarin
+                    - paprika
+                    - pomelo
+                    - pepaya
+                    - persik
+                    - pinang
+                    - pear
+                    - pisang
+                    - petai
+                    - peria
+                    - plum
+                    - prune
+                    - rambai
+                    - raspberry
+                    - rambutan
+                    - rambusa
+                    - red
+                    - currant
+                    - salak
+                    - sawo
+                    - kecik
+                    - manila
+                    - semangka
+                    - sirsak
+                    - siwalan
+                    - srikaya
+                    - stroberi
+                    - sukun
+                    - terap
+                    - terong
+                    - timun
+                    - tomat
+                    - tin
+                    - talok
+                    - ubi
+                    - uni
+                    - vanili
+                    - waluh
+                    - widuri
+                    - wuni
+                    - zaitun
+                    - acorn
+                    - squash
+                    - andewi
+                    - artichoke
+                    - asparagus
+                    - jawa
+                    - bawang
+                    - bombay
+                    - putih
+                    - merah
+                    - bayam
+                    - bendi
+                    - brinjal
+                    - buncis
+                    - hitam
+                    - serabut
+                    - brokoli
+                    - cabai
+                    - cendawan
+                    - daun
+                    - obat
+                    - singkong
+                    - seledri
+                    - escarole
+                    - gambas
+                    - jalapeno
+                    - jamur
+                    - bogor
+                    - hijau
+                    - kapri
+                    - kelisa
+                    - kuning
+                    - panjang
+                    - polong
+                    - kailan
+                    - kangkung
+                    - kecambah
+                    - kecipir
+                    - keledek
+                    - kemiri
+                    - kentang
+                    - ketumbar
+                    - kubis
+                    - bunga
+                    - brussel
+                    - kucai
+                    - manis
+                    - lada
+                    - cina
+                    - loncang
+                    - siam
+                    - lembayung
+                    - merica
+                    - mint
+                    - okra
+                    - pegaga
+                    - petola
+                    - pucuk
+                    - paku
+                    - sawi
+                    - selada
+                    - sengkuang
+                    - serai
+                    - terung
+                    - jalar
+                    - rambat
+                    - wortel
+                    - zukini
+                    - baronang
+                    - ekor
+                    - hiu
+                    - kakap
+                    - kerapu
+                    - kue
+                    - marlin
+                    - layaran
+                    - tenggiri
+                    - teri
+                    - tongkol
+                    - baung
+                    - bawal
+                    - belut
+                    - gabus
+                    - gurami
+                    - lele
+                    - mas
+                    - mujair
+                    - nila
+                    - nilem
+                    - patin
+                    - sepat
+                    - tawes
+                    - demersa
+                    - pelagis
+                    - tuna
+                    - cakalang
+                    - karang
+                    - lobster
+                    - udang
+                    - cumi
+                    - gulee
+                    - itek
+                    - eungkot
+                    - rambeu
+                    - yee
+                    - mie
+                    - aceh
+                    - bu
+                    - gureng
+                    - dalca
+                    - tangkap
+                    - sunti
+                    - boh
+                    - puniaram
+                    - nasi
+                    - guri
+                    - paya
+                    - kanji
+                    - rumbi
+                    - keumamah
+                    - martabak
+                    - sate
+                    - matang
+                    - sie
+                    - kameng
+                    - reuboh
+                    - bada
+                    - reuteuek
+                    - doidoi
+                    - karah
+                    - kuwah
+                    - tuhe
+                    - meuseukat
+                    - peunajoh
+                    - tho
+                    - wajeb
+                    - sambai
+                    - udeung
+                    - manok
+                    - bak
+                    - kala
+                    - payeh
+                    - kareng
+                    - terucroh
+                    - peukasam
+                    - paeh
+                    - bileh
+                    - 'on'
+                    - peugaga
+                    - rampoe
+                    - sei
+                    - puteh
+                    - timpan
+                    - roti
+                    - cane
+                    - jala
+                    - teh
+                    - tarik
+                    - arsik
+                    - angsle
+                    - babi
+                    - panggang
+                    - karo
+                    - bika
+                    - ambon
+                    - bolu
+                    - gulung
+                    - cimpa
+                    - cipera
+                    - dalini
+                    - horbo
+                    - ikan
+                    - holat
+                    - sale
+                    - kidu-kidu
+                    - kwetiau
+                    - lappet
+                    - gadong
+                    - pohul-pohul
+                    - lapis
+                    - legit
+                    - lemang
+                    - lomok-lomok
+                    - gomak
+                    - mutiara
+                    - bagan
+                    - siapi-api
+                    - nanidugu
+                    - naniura
+                    - ombus-ombus
+                    - pangsit
+                    - pok
+                    - pia
+                    - molen
+                    - ketawa
+                    - saksang
+                    - sambel
+                    - hebi
+                    - sambal
+                    - rias
+                    - tuk
+                    - sangsang
+                    - soto
+                    - medan
+                    - tanggo-tanggo
+                    - terites
+                    - tipa-tipa
+                    - tok-tok
+                    - tuak
+                    - uyen
+                    - kosong
+                    - bulung
+                    - gadung
+                    - ale-ale
+                    - pedas
+                    - pop
+                    - balado
+                    - goreng
+                    - beras
+                    - rendang
+                    - bubur
+                    - kampiun
+                    - siana
+                    - cindua
+                    - dadiah
+                    - dakak-dakak
+                    - dendeng
+                    - batokok
+                    - es
+                    - campur
+                    - tebak
+                    - galamai
+                    - gulai
+                    - banak
+                    - cubadak
+                    - itiak
+                    - kambiang
+                    - kemumu
+                    - pucuak
+                    - toco
+                    - tambusu
+                    - baka
+                    - kalio
+                    - karak
+                    - kaliang
+                    - ketan
+                    - sarikaya
+                    - kipang
+                    - keripik
+                    - sanjai
+                    - kerupuk
+                    - jangek
+                    - jariang
+                    - lontong
+                    - pitalah
+                    - lamang
+                    - tapai
+                    - kapau
+                    - palai
+                    - rinuak
+                    - pangek
+                    - masin
+                    - pensi
+                    - pergedel
+                    - pinyaram
+                    - rakik
+                    - maco
+                    - padang
+                    - pariaman
+                    - sagon
+                    - bakar
+                    - sambalado
+                    - tanak
+                    - sarang
+                    - balam
+                    - sarabi
+                    - talua
+                    - tolu-tolu
+                    - wajik
+                    - tempoyak
+                    - kojo
+                    - musibah
+                    - sele
+                    - nenas
+                    - gelamai
+                    - perentak
+                    - blacan
+                    - burgo
+                    - 8
+                    - jam
+                    - engkak
+                    - celimpungan
+                    - empek-empek
+                    - pempek
+                    - kapal
+                    - selam
+                    - lenjer
+                    - lenggang
+                    - kulit
+                    - adaan
+                    - tahu
+                    - pistel
+                    - juadah
+                    - kemplang
+                    - lempok
+                    - tekwan
+                    - model
+                    - mi
+                    - celor
+                    - lepat
+                    - lakso
+                    - maksuba
+                    - srikayo
+                    - kumbu
+                    - laksan
+                    - malbi
+                    - pindang
+                    - daging
+                    - tulang
+                    - brengkes
+                    - gangan
+                    - pakasam
+                    - peda
+                    - rusip
+                    - pais
+                    - salai
+                    - kasam
+                    - kluntup
+                    - lingkung
+                    - mbacang
+                    - minyak
+                    - samin
+                    - lemar
+                    - gendar
+                    - bangket
+                    - juice
+                    - mata
+                    - pengantin
+                    - laksamana
+                    - mengamuk
+                    - kemojo
+                    - kamboja
+                    - rujak
+                    - maharaja
+                    - belacan
+                    - tiga
+                    - rasa
+                    - seruwit
+                    - sekubal
+                    - buak
+                    - balak
+                    - taboh
+                    - gelemok
+                    - lambang
+                    - sari
+                    - taoge
+                    - emping
+                    - bandeng
+                    - otak-otak
+                    - sumsum
+                    - rabeg
+                    - jojorong
+                    - cuwer
+                    - gipang
+                    - apem
+                    - keceprek
+                    - melinjo
+                    - bebek
+                    - gemblong
+                    - semur
+                    - lemeng
+                    - betawi
+                    - kerak
+                    - telor
+                    - sop
+                    - kaki
+                    - serani
+                    - pesalak
+                    - pucungcak
+                    - pecak
+                    - gurame
+                    - pelas
+                    - besan
+                    - gado-gado
+                    - boplo
+                    - doger
+                    - teler
+                    - telubuk
+                    - pesmo
+                    - talam
+                    - begana
+                    - daon
+                    - uduk
+                    - ketoprak
+                    - jongkong
+                    - unti
+                    - bukhari
+                    - khas
+                    - kroket
+                    - bir
+                    - pletok
+                    - bebeg
+                    - dodol
+                    - buaya
+                    - asinan
+                    - jakarta
+                    - geplak
+                    - ongol-ongol
+                    - rangi
+                    - risoles
+                    - marunda
+                    - capsay
+                    - kimlo
+                    - marak
+                    - bagane
+                    - kebuli
+                    - bebanci
+                    - serondeng
+                    - pepe
+                    - gila
+                    - onde
+                    - karedok
+                    - bandung
+                    - batagor
+                    - bakso
+                    - kocok
+                    - perkedel
+                    - bondon
+                    - maicih
+                    - lotek
+                    - serabi
+                    - combro
+                    - misro
+                    - timbel
+                    - pepes
+                    - oncom
+                    - peuyeum
+                    - cireng
+                    - gepuk
+                    - ambokueh
+                    - colenak
+                    - brownies
+                    - kukus
+                    - sus
+                    - suzanna
+                    - bala-bala
+                    - gehu
+                    - bandrek
+                    - bajigur
+                    - goyobod
+                    - cendol
+                    - sakoteng
+                    - kolontong
+                    - sumedang
+                    - sukasari
+                    - tauco
+                    - cianjur
+                    - toge
+                    - manisan
+                    - kupat
+                    - tutug
+                    - tasik
+                    - bakmi
+                    - babat
+                    - kremes
+                    - bulat
+                    - gedung
+                    - gincu
+                    - gula
+                    - cakar
+                    - tetel
+                    - hucap
+                    - ladu
+                    - garut
+                    - dorokdok
+                    - sega
+                    - lengko
+                    - empal
+                    - gentong
+                    - asem
+                    - gejrot
+                    - docang
+                    - koclok
+                    - cirebon
+                    - mlarat
+                    - laksa
+                    - tauge
+                    - jasinga
+                    - unyil
+                    - mochi
+                    - sukabumi
+                    - bunut
+                    - jahe
+                    - tangkar
+                    - opak
+                    - rangginang
+                    - gegeplak
+                    - semprong
+                    - hideung
+                    - ali
+                    - maranggi
+                    - sadang
+                    - ciganea
+                    - simping
+                    - bendul
+                    - aren
+                    - cikeris
+                    - pala
+                    - lumpia
+                    - pong
+                    - gimbal
+                    - sego
+                    - presto
+                    - petis
+                    - tite
+                    - gudeg
+                    - koyor
+                    - jenang
+                    - telo
+                    - swiekee
+                    - kuah
+                    - ungaran
+                    - gandul
+                    - salatiga
+                    - enting-enting
+                    - wingko
+                    - getuk
+                    - tape
+                    - aci
+                    - pilus
+                    - antor
+                    - bogares
+                    - lebaksiu
+                    - tegal
+                    - poci
+                    - gopek
+                    - dawet
+                    - asin
+                    - brebes
+                    - itik
+                    - glabed
+                    - kerang
+                    - sroto
+                    - sokaraja
+                    - gethuk
+                    - tempe
+                    - mendoan
+                    - lanting
+                    - ambal
+                    - jaket
+                    - nopya
+                    - mino
+                    - megono
+                    - pekalongan
+                    - adon-adon
+                    - coro
+                    - gempol
+                    - horok-horok
+                    - pecel
+                    - laut
+                    - tempong
+                    - kikil
+                    - oven
+                    - carang
+                    - madu
+                    - kudus
+                    - lentog
+                    - taoto
+                    - garang
+                    - grombyang
+                    - kelo
+                    - mrico
+                    - tuyuan
+                    - dumbek
+                    - blora
+                    - rawon
+                    - ndoreng
+                    - wedang
+                    - pekak
+                    - botok
+                    - liwet
+                    - areh
+                    - bacem
+                    - timlo
+                    - intip
+                    - usus
+                    - tengkleng
+                    - toprak
+                    - tumpang
+                    - pleret
+                    - ampyang
+                    - notosuman
+                    - semar
+                    - mendem
+                    - sosis
+                    - solo
+                    - dongo
+                    - gading
+                    - buntel
+                    - balap
+                    - srabi
+                    - cabuk
+                    - rambak
+                    - selat
+                    - langgi
+                    - gule
+                    - mandarin
+                    - abon
+                    - varia
+                    - ijo
+                    - tongseng
+                    - semir
+                    - mendhem
+                    - jadah
+                    - blondo
+                    - acar
+                    - gesing
+                    - ayu
+                    - plered
+                    - puter
+                    - kawis
+                    - cao
+                    - kencur
+                    - serbat
+                    - abangan
+                    - alen
+                    - godog
+                    - bakmoy
+                    - bakpia
+                    - suwar-suwir
+                    - beer
+                    - djawa
+                    - bunthil
+                    - cemplon
+                    - cenil
+                    - age
+                    - gaplek
+                    - gathot
+                    - geblek
+                    - growol
+                    - gudangan
+                    - manggar
+                    - manten
+                    - jamu
+                    - kunir
+                    - gronthol
+                    - rumput
+                    - sungsum
+                    - juwawut
+                    - kipo
+                    - klepon
+                    - jos
+                    - arang
+                    - legomoro
+                    - lempeng
+                    - legendar
+                    - trubus
+                    - mangut
+                    - kebo
+                    - mega
+                    - mendung
+                    - mendut
+                    - tektek
+                    - magelang
+                    - kucing
+                    - wiwit
+                    - ndog
+                    - gludug
+                    - onde-onde
+                    - opor
+                    - peyek
+                    - bayem
+                    - dele
+                    - jingking
+                    - rengginang
+                    - jok
+                    - degan
+                    - kota
+                    - gede
+                    - krecek
+                    - tolo
+                    - klathak
+                    - kocor
+                    - winong
+                    - abang
+                    - mesem
+                    - benguk
+                    - gembus
+                    - koro
+                    - timus
+                    - thiwul
+                    - trancam
+                    - trasikan
+                    - tumpeng
+                    - urap
+                    - ronde
+                    - secang
+                    - uwuh
+                    - yangko
+                    - surabaya
+                    - cingur
+                    - uleg
+                    - legi
+                    - semanggi
+                    - tek
+                    - cucur
+                    - ponorogo
+                    - lamongan
+                    - lodeh
+                    - kediri
+                    - bakiak
+                    - phitik
+                    - kesrut
+                    - jangan
+                    - pakis
+                    - koyong
+                    - lemuru
+                    - pelasan
+                    - uceng
+                    - awok
+                    - bothok
+                    - orok
+                    - kucur
+                    - nogo
+                    - bikang
+                    - lempog
+                    - lemper
+                    - bungkuk
+                    - lemet
+                    - lanun
+                    - lupis
+                    - blendung
+                    - jemblem
+                    - sawot
+                    - pukis
+                    - cemplong
+                    - kecut
+                    - lethok
+                    - gobet
+                    - ragi
+                    - pare
+                    - gerang
+                    - gembos
+                    - nus
+                    - kelor
+                    - madiun
+                    - brem
+                    - kelinci
+                    - jerangking
+                    - gado
+                    - gobyos
+                    - bata
+                    - anget
+                    - pottre
+                    - nyellem
+                    - nom
+                    - aeng
+                    - pokak
+                    - syarifah
+                    - sekojo
+                    - lepet
+                    - malang
+                    - bakwan
+                    - puthu
+                    - lanang
+                    - mawut
+                    - cwie
+                    - stmj
+                    - mocca
+                    - krawu
+                    - blawu
+                    - rempih
+                    - danggur
+                    - wa
+                    - keningar
+                    - penyet
+                    - karet
+                    - becek
+                    - boranan
+                    - suwar
+                    - suwir
+                    - ledre
+                    - pedda
+                    - manto
+                    - keponakan
+                    - gangsa
+                    - maghadip
+                    - musawaroh
+                    - putre
+                    - nyelem
+                    - nomoeng
+                    - podak
+                    - dolar
+                    - bongko
+                    - tajin
+                    - shobih
+                    - dudul
+                    - cingu
+                    - nyen
+                    - onyen
+                    - pokeh
+                    - mera
+                    - betutu
+                    - guling
+                    - bandot
+                    - be
+                    - kokak
+                    - mekuah
+                    - pasih
+                    - mesambel
+                    - matah
+                    - berengkes
+                    - grangasem
+                    - jejeruk
+                    - jukut
+                    - ares
+                    - srombotan
+                    - urab
+                    - komoh
+                    - lawar
+                    - bubuh
+                    - tepeng
+                    - penyon
+                    - kakul
+                    - kablet
+                    - lilit
+                    - pentul
+                    - penyu
+                    - tusuk
+                    - timbungan
+                    - jenggo
+                    - tum
+                    - sagu
+                    - jaja
+                    - batun
+                    - begina
+                    - bendu
+                    - engol
+                    - godoh
+                    - jongkok
+                    - ketimus
+                    - lak-lak
+                    - sumping
+                    - tain
+                    - buati
+                    - uli
+                    - misi
+                    - rahayu
+                    - tibah
+                    - taliwang
+                    - bulayak
+                    - plecing
+                    - bingka
+                    - dolu
+                    - ale
+                    - bie
+                    - pang
+                    - cah
+                    - ganepuk
+                    - dorong
+                    - pontianak
+                    - kwetiauw
+                    - siram
+                    - ca
+                    - kwe
+                    - tar
+                    - piring
+                    - lidah
+                    - dangi
+                    - peletuk
+                    - pekasam
+                    - popat
+                    - pelam
+                    - pekating
+                    - kecap
+                    - basah
+                    - amparan
+                    - tatak
+                    - apam
+                    - barabai
+                    - baras
+                    - parangge
+                    - balungan
+                    - hayam
+                    - barandam
+                    - gunting
+                    - cangkarok
+                    - karing
+                    - dadar
+                    - gagatas
+                    - gagati
+                    - gaguduh
+                    - garigit
+                    - gumpal
+                    - hintalu
+                    - karuang
+                    - ipau
+                    - pipilan
+                    - bajarang
+                    - kikicak
+                    - kokoleh
+                    - lam
+                    - lakatan
+                    - bahintti
+                    - lalampar
+                    - lapat
+                    - sapat
+                    - patah
+                    - pupudak
+                    - putri
+                    - putu
+                    - mayang
+                    - rangai
+                    - rangkasusun
+                    - sarimuka
+                    - pangantin
+                    - slada
+                    - gumbili
+                    - topi
+                    - baja
+                    - ulin-ulin
+                    - untuk
+                    - upak
+                    - wadai
+                    - gayam
+                    - satu
+                    - gadang
+                    - ganngan
+                    - haliling
+                    - humbut
+                    - kaladi
+                    - karuh
+                    - ludeh
+                    - luncar
+                    - rabung
+                    - garih
+                    - batanak
+                    - kalakai
+                    - batumis
+                    - kambang
+                    - tigaron
+                    - bajaruk
+                    - karih
+                    - tarung
+                    - babanam
+                    - basantan
+                    - tumis
+                    - using-using
+                    - hundang
+                    - papai
+                    - habang
+                    - biawan
+                    - baubar
+                    - buras
+                    - hampap
+                    - haruan
+                    - kering
+                    - jaruk
+                    - kalangkala
+                    - lumbu
+                    - bapais
+                    - tarap
+                    - katupat
+                    - kandangan
+                    - lampam
+                    - mandai
+                    - pundut
+                    - papuyu
+                    - basanga
+                    - saluang
+                    - banjar
+                    - juhu
+                    - umbut
+                    - rotan
+                    - sawit
+                    - tangkiling
+                    - buah-buahan
+                    - bukang-bukang
+                    - pengat
+                    - rojak
+                    - cabe
+                    - keladi
+                    - santan
+                    - tungkul
+                    - gence
+                    - ruan
+                    - jalo
+                    - kelubutan
+                    - bella
+                    - keat
+                    - kamun
+                    - kerubut
+                    - salab
+                    - kepiting
+                    - bekepor
+                    - lalap
+                    - tarakan
+                    - sobot
+                    - tirom
+                    - cumi-cumi
+                    - sagal
+                    - gamik
+                    - kima
+                    - raja
+                    - mentah
+                    - singkil
+                    - semor
+                    - bola-bola
+                    - lemangu
+                    - balelo
+                    - berbumbu
+                    - saus
+                    - ala
+                    - singapura
+                    - abuh
+                    - akar
+                    - sampai
+                    - amplang
+                    - amperan
+                    - tetak
+                    - balembar
+                    - babok
+                    - bahui
+                    - dalam
+                    - basong
+                    - berongkong
+                    - susu
+                    - cincin
+                    - coplok
+                    - kertap
+                    - elat
+                    - gagodoh
+                    - spesial
+                    - mesir
+                    - gegaok
+                    - getas
+                    - getok
+                    - kararaban
+                    - kelepon
+                    - keminting
+                    - kericak
+                    - agar-agar
+                    - lemuko
+                    - silat
+                    - lo
+                    - ulung
+                    - kasirat
+                    - susun
+                    - nyahun
+                    - nyangau
+                    - lok
+                    - pepare
+                    - podang
+                    - pulut
+                    - gogos
+                    - sokok
+                    - rebus
+                    - besumap
+                    - sanggar
+                    - muka
+                    - suman
+                    - keruang
+                    - terang
+                    - bulan
+                    - temu
+                    - kunci
+                    - tumpi
+                    - angin
+                    - ufak
+                    - untuk-untuk
+                    - apang
+                    - coe
+                    - bagea
+                    - balapis
+                    - biapong
+                    - jenever
+                    - binyolos
+                    - bluder
+                    - brudel
+                    - bobengka
+                    - halua
+                    - goyang
+                    - kawangkoan
+                    - klappertaart
+                    - kolomben
+                    - koyabu
+                    - kukis
+                    - lalampa
+                    - lampu
+                    - panada
+                    - popaco
+                    - susen
+                    - rica-rica
+                    - isi
+                    - di
+                    - bulu
+                    - paniki
+                    - putar
+                    - tore
+                    - rica
+                    - fufu
+                    - dabu
+                    - lilang
+                    - tikus
+                    - ular
+                    - patola
+                    - monyet
+                    - midaal
+                    - bungkus
+                    - jaha
+                    - pampis
+                    - nike
+                    - roa
+                    - rw
+                    - kolombi
+                    - sayor
+                    - leilem
+                    - pangi
+                    - ganemo
+                    - daong
+                    - popaya
+                    - sup
+                    - brenebon
+                    - tinutuan
+                    - tinorangsak
+                    - tuturuga
+                    - woku
+                    - belanga
+                    - gohu
+                    - cap
+                    - pinaraci
+                    - saguer
+                    - paranggi
+                    - bannang
+                    - barongko
+                    - baruasa
+                    - bassang
+                    - beppa
+                    - janda
+                    - biji-biji
+                    - bipang
+                    - peca
+                    - rampah
+                    - cucuru
+                    - bayao
+                    - dange
+                    - deppa
+                    - tori
+                    - kau
+                    - sawalla
+                    - nagasari
+                    - doko
+                    - cangkuling
+                    - cangkuning
+                    - golla
+                    - ganepo
+                    - tare
+                    - toraja
+                    - jalang
+                    - kote
+                    - sinjai
+                    - katri
+                    - sala
+                    - mandi
+                    - palu
+                    - tawaro
+                    - pallu
+                    - butung
+                    - paserrek
+                    - epe
+                    - cangkiri
+                    - pawa
+                    - sakko
+                    - tello
+                    - penyyu
+                    - taripang
+                    - kambu
+                    - camme
+                    - burak
+                    - coto
+                    - makassar
+                    - dangke
+                    - kadonteng
+                    - kaladde
+                    - kapurung
+                    - lawa
+                    - nande
+                    - dalle
+                    - nasu
+                    - cemba
+                    - to
+                    - salukanan
+                    - basa
+                    - kacci
+                    - kaloa
+                    - mara
+                    - sura
+                    - piong
+                    - sarondeng
+                    - songkolo
+                    - konro
+                    - saudara
+                    - ballotuak
+                    - kawah
+                    - soami
+                    - kambalu
+                    - luluta
+                    - gule-gule
+                    - susuru
+                    - colo-colo
+                    - papeda
+                    - lapola
+                    - maluku
+                    - dengan
+                    - ganemu
+                    - ulang-ulang
+                    - rampai
+                    - puding
+                    - kohu-kohu
+                    - kasbi
+                    - manokwari
+                    - aunu
+                    - anuve
+                    - habre
+                    - senebre
+                    - eurimoo
+                    - bihun
+                    - kari
+                    - jambal
+                    - mangkuk
+                    - perut
+                    - kuk
+                    - tepung
+                    - ceylon
+    bumil:
+        type: keyword
+        options:
+            keywords:
+                sp:
+                    - simpel dan praktis
+            case: true
+            exact: true
+    menu:
+        type: keyword
+        options:
+            keywords:
+                minuman:
+                    - minuman
+            case: true
+    penyakit:
+        type: keyword
+        options:
+            keywords:
+                namaPenyakit:
+                    - amandel
+                    - anemia
+                    - amandel
+                    - anemia
+                    - ambeien
+                    - asma
+                    - alergi kulit
+                    - aids
+                    - hiv
+                    - asam urat
+                    - batu ginjal
+                    - infeksi ginjal
+                    - batu empedu
+                    - bronchitis
+                    - batuk
+                    - flu
+                    - radang tenggorokan
+                    - diabetes
+                    - demam berdarah
+                    - malaria tropika
+                    - demam
+                    - diare
+                    - muntaber
+                    - tbc paru-paru
+                    - flek paru-paru
+                    - flek hitam
+                    - jerawat
+                    - hipertensi
+                    - hernia
+                    - infeksi saluran kencing
+                    - kelamin
+                    - infeksi
+                    - radang telinga
+                    - infeksi
+                    - radang hati
+                    - lever
+                    - sgot
+                    - infeksi
+                    - radang pendarahan seluruh tubuh
+                    - impoten
+                    - lemah syahwat
+                    - jantung
+                    - jantung bocor
+                    - jantung koroner
+                    - penyempitan pembuluh darah
+                    - kolesterol
+                    - trygliceride
+                    - kolesterol
+                    - asam urat
+                    - kanker payudara
+                    - kanker rahim
+                    - kanker hati
+                    - hepatitis b
+                    - kanker darah
+                    - leukemia
+                    - kanker prostat
+                    - kantong kemih
+                    - lumpu
+                    - gangguan tulang belakang
+                    - keputihan
+                    - rapat vagina
+                    - pendarahan
+                    - katarak
+                    - maag
+                    - sakit perut
+                    - infeksi lambung
+                    - migrain
+                    - pusing
+                    - tengkuk sakit
+                    - penyempitan syaraf
+                    - muntaber
+                    - penyubur kandungan
+                    - penyempitan indung telur
+                    - penyempitan syaraf
+                    - syaraf terjepit
+                    - penyempitan pembuluh darah di otak
+                    - pembekuan darah
+                    - rheumatik
+                    - radang tulang
+                    - tbc tulang
+                    - sakit pingggang
+                    - sakit tulang belakang
+                    - thypus
+                    - usus buntu
+                    - stroke
+                    - tumor
+                    - kangker tulang
+methods: {}
+config: {}

@@ -1,0 +1,11 @@
+{
+    "autoload": {
+        "psr-4": {"Yandex\\Translate\\": "src"}
+    },
+
+    "require": {
+		"yandex/translate-api": "1.5.x",
+		"paquettg/php-html-parser": "^1.7",
+        "beeyev/yandex-translate": "^2.0"
+    }
+}
